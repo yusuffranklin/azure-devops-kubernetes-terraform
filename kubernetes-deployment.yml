@@ -1,8 +1,60 @@
 trigger:
 - master
 
-pool:
-  vmImage: ubuntu-latest
+resources:
+- repo: self
 
-# Build and Push Docker Image
+variables:
+  tag: '$(Build.BuildId)'
 
+stages:
+# Build and Push Docker Image  
+- stage: Build
+  displayName: Build Image
+  jobs:
+  - job: Build
+    displayName: Build Image
+    pool:
+      vmImage: ubuntu-latest
+    steps:    
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'yusuffranklin-docker-hub'
+        repository: 'yusuffranklin/currency-exchange-devops'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(tag)'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: '**/*.yaml'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    # Publish K8S Files
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'manifests'
+        publishLocation: 'Container'
+# Deploy Docker Image to Kubernetes Azure
+- stage: Deploy
+  displayName: Deploy Image
+  jobs:
+  - job: Deploy
+    displayName: Deploy Image
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'manifests'
+        itemPattern: '**/*.yaml'
+        targetPath: '$(System.ArtifactsDirectory)'
+    - task: KubernetesManifest@1
+      inputs:
+        action: 'deploy'
+        connectionType: 'kubernetesServiceConnection'
+        kubernetesServiceConnection: 'azure-kubernetes-service-connection'
+        namespace: 'default'
+        manifests: '$(System.ArtifactsDirectory)/deployment.yaml'
+        containers: 'yusuffranklin/currency-exchange-devops:$(tag)'
