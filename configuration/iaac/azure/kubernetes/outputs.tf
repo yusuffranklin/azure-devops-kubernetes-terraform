@@ -12,7 +12,6 @@ output "cluster_ca_certificate" {
 
 output "cluster_username" {
   value = azurerm_kubernetes_cluster.terraform-k8s.kube_config.0.username
-  sensitive = true
 }
 
 output "cluster_password" {
@@ -21,6 +20,7 @@ output "cluster_password" {
 
 output "kube_config" {
   value = azurerm_kubernetes_cluster.terraform-k8s.kube_config_raw
+  sensitive = true
 }
 
 output "host" {
