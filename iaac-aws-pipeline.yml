@@ -7,4 +7,19 @@ pool:
 steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
-
+- task: TerraformTaskV4@4 # terraform init
+  inputs:
+    provider: 'aws'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/configuration/iaac/aws/kubernetes'
+    commandOptions: '-lock=false'
+    backendServiceAWS: 'aws-tf-connection'
+    backendAWSBucketName: 'tf-backend-state-joeklarsz'
+    backendAWSKey: 'kubernetes-dev.tfstate'
+- task: TerraformTaskV4@4 # terraform apply
+  inputs:
+    provider: 'aws'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/configuration/iaac/aws/kubernetes'
+    commandOptions: '-lock=false'
+    environmentServiceNameAWS: 'aws-tf-connection'
