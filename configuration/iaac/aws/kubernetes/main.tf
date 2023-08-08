@@ -29,7 +29,7 @@ provider "kubernetes" {
   version                = "~> 1.9"
 }
 
-module "devtest-cluster" {
+module "in28minutes-cluster" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = "devtest-cluster"
   cluster_version = "1.14"
