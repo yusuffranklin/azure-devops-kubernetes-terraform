@@ -9,7 +9,7 @@ terraform {
   backend "s3" {
     bucket = "mybucket" # Will be overridden from build
     key    = "path/to/my/key" # Will be overridden from build
-    region = "ap-southeast-1"
+    region = "us-east-1"
   }
 }
 
@@ -79,5 +79,5 @@ resource "kubernetes_cluster_role_binding" "example" {
 
 # Needed to set the default region
 provider "aws" {
-  region  = "ap-southeast-1"
+  region  = "us-east-1"
 }
