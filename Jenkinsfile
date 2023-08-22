@@ -10,7 +10,7 @@ pipeline{
     stages{
         stage('Build Docker Image'){
             steps{
-                sh 'docker build -t yusuffranklin/currency-exchange-devops .'
+                sh 'sudo docker build -t yusuffranklin/currency-exchange-devops .'
             }
         }
         stage('Login'){
@@ -20,7 +20,7 @@ pipeline{
         }
         stage('Push Docker Image'){
             steps{
-                sh 'docker push yusuffranklin/currency-exchange-devops'
+                sh 'sudo docker push yusuffranklin/currency-exchange-devops'
             }
         }
     }
