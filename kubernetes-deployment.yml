@@ -5,7 +5,8 @@ resources:
 - repo: self
 
 variables:
-  tag: '$(Build.BuildId)'
+  #tag: '$(Build.BuildId)'
+  tag: 'latest'
 
 stages:
 # Build and Push Docker Image  
@@ -17,13 +18,13 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:    
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'yusuffranklin-docker-hub'
-        repository: 'yusuffranklin/currency-exchange-devops'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: '$(tag)'
+    # - task: Docker@2
+    #   inputs:
+    #     containerRegistry: 'yusuffranklin-docker-hub'
+    #     repository: 'yusuffranklin/currency-exchange-devops'
+    #     command: 'buildAndPush'
+    #     Dockerfile: '**/Dockerfile'
+    #     tags: '$(tag)'
     - task: CopyFiles@2
       inputs:
         SourceFolder: '$(System.DefaultWorkingDirectory)'
